@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   libpcan
   roscpp
   sensor_msgs
+  mujoco_ros_msgs
 # roslaunch  # Disabled due to testing
 )
 
@@ -21,7 +22,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES allegro_hand_controllers
-  CATKIN_DEPENDS allegro_hand_driver bhand libpcan roscpp sensor_msgs
+  CATKIN_DEPENDS allegro_hand_driver bhand libpcan roscpp sensor_msgs mujoco_ros_msgs
 #  DEPENDS
 )
 
@@ -34,6 +35,7 @@ include_directories(
 )
 
 add_library(allegro_node src/allegro_node.cpp)
+add_library(allegro_node_mj src/allegro_node_mj.cpp)
 
 ## Declare executables
 add_executable(allegro_node_grasp src/allegro_node_grasp.cpp)
@@ -43,7 +45,7 @@ add_executable(allegro_node_pd src/allegro_node_pd.cpp)
 target_link_libraries(allegro_node_pd allegro_node ${catkin_LIBRARIES})
 
 add_executable(allegro_node_sim src/allegro_node_sim.cpp)
-target_link_libraries(allegro_node_sim allegro_node ${catkin_LIBRARIES})
+target_link_libraries(allegro_node_sim allegro_node_mj ${catkin_LIBRARIES})
 
 add_executable(allegro_node_velsat src/allegro_node_velsat.cpp)
 target_link_libraries(allegro_node_velsat allegro_node ${catkin_LIBRARIES})
@@ -64,6 +66,7 @@ install(TARGETS
   allegro_node_pd
   allegro_node_torque
   allegro_node_velsat
+  allegro_node_mj
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
