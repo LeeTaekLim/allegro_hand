@@ -1,11 +1,12 @@
 # allegro_hand_ros_catkin
 
 New:
- - Zero parameters and coefficients for SAH030E043R (SNU)
+ - Zero parameters and PD coefficients for SAH030E043R (SNU)
  - Support for mujoco_ros_sim (https://github.com/saga0619/mujoco_ros_sim) without ecat
  - MuJoCo XML
  - URDF edit (by @jh9652)
  - URDF import for Ubuntu versions above 16
+ - Experimental control
 
 
 Allegro Hand ROS catkin build
