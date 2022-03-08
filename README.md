@@ -1,12 +1,12 @@
 # allegro_hand_ros_catkin
 
 New:
- - Zero parameters and PD coefficients for SAH030E043R (SNU)
- - Support for mujoco_ros_sim (https://github.com/saga0619/mujoco_ros_sim) without EtherCAT
- - MuJoCo XML
- - URDF edit (by @jh9652)
- - URDF import for ROS Melodic and above
- - Experimental control
+ - Added zero parameters and PD coefficients for SAH030E043R (SNU)
+ - Added support for mujoco_ros_sim (https://github.com/saga0619/mujoco_ros_sim), does not support EtherCAT
+ - Added MuJoCo model XML
+ - Fixed URDF thumb model bug (by @jh9652)
+ - Changed model import script to accommodate URDFs in ROS Melodic and above
+ - Added experimental control methods
 
 
 Allegro Hand ROS catkin build
