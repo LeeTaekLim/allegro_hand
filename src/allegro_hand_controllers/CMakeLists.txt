@@ -38,7 +38,7 @@ add_library(allegro_node src/allegro_node.cpp)
 add_library(allegro_node_mj src/allegro_node_mj.cpp)
 
 ## Declare executables
-add_executable(allegro_node_grasp src/allegro_node_grasp.cpp)
+add_executable(allegro_node_grasp src/allegro_node_grasp_org.cpp)
 target_link_libraries(allegro_node_grasp allegro_node ${catkin_LIBRARIES})
 
 add_executable(allegro_node_pd src/allegro_node_pd.cpp)

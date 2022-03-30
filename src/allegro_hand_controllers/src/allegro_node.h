@@ -23,6 +23,7 @@ class AllegroHandDrv;
 
 // Topic names: current & desired JointState, named grasp to command.
 const std::string JOINT_STATE_TOPIC = "allegroHand/joint_states";
+const std::string DESIRED_JOINT_STATE_TOPIC = "allegroHand/desired_joint_states";
 const std::string DESIRED_STATE_TOPIC = "allegroHand/joint_cmd";
 const std::string LIB_CMD_TOPIC = "allegroHand/lib_cmd";
 
@@ -68,6 +69,7 @@ class AllegroNode {
   // ROS stuff
   ros::NodeHandle nh;
   ros::Publisher joint_state_pub;
+  ros::Publisher desired_joint_state_pub;
   ros::Subscriber joint_cmd_sub;
 
   // Store the current and desired joint states.

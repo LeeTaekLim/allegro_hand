@@ -28,7 +28,7 @@
   <!-- The inclusion of which_hand in the zero.yaml file has been deprecated.
        Which hand (left/right) must now be specified as an argument when launching the Allegro Hand
        as an input for both the robot_description and for the grasping library controllers. -->
-  <arg name="HAND"/>
+  <arg name="HAND" default="right"/>
   <arg name="NUM" default="0"/>
   <arg name="GAZEBO" default="false"/>
 
@@ -70,8 +70,10 @@
   <!-- Load the robot description directly from the xacro file. (NOTE: store it
        in two parameter names.) -->
   <param name="robot_description"
-         command="$(find xacro)/xacro.py
-                  $(find allegro_hand_description)/allegro_hand_description_$(arg HAND).xacro"/>
+
+          textfile="$(find allegro_hand_description)/allegro_hand_description_$(arg HAND).urdf"/>
+
+          
 
   <!-- Allegro Hand controller and communication node. -->
   <node name="allegroHand_$(arg HAND)_$(arg NUM)"
@@ -123,7 +125,7 @@
   <!-- Joint States (angles) to Joint Transforms -->
   <node name="jointState2tf_$(arg NUM)"
         pkg="robot_state_publisher"
-        type="state_publisher">
+        type="robot_state_publisher">
     <remap from="tf" to="allegroHand_$(arg NUM)/tf"/>
     <remap from="joint_states" to="allegroHand_$(arg NUM)/joint_states"/>
   </node>

@@ -170,6 +170,11 @@ void AHKeyboard::keyLoop()
         ss << "save";
         dirty = true;
         break;
+      case KEYCODE_v:
+        ROS_DEBUG("v_key: sin wave. for PD control");
+        ss << "sin";
+        dirty = true;
+        break;
       case KEYCODE_slash:
       case KEYCORD_question:
         printUsage();

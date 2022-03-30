@@ -41,7 +41,17 @@ class AllegroNodePD : public AllegroNode {
 
   // If this flag is true, the hand will be controlled (either in joint position
   // or joint torques). If false, desired torques will all be zero.
+
+  // TL Add
+  void setDesiredJointState();
+  void setDesiredTorque();
+
+
+
   bool control_hand_ = false;
+  bool is_sin = false;
+  double t;
+  ros::Time sin_start_t;
 };
 
 #endif  // __ALLEGRO_NODE_PD_H__

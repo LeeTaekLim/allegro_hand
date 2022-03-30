@@ -33,6 +33,9 @@ void AllegroNodeTorque::setTorqueCallback(const sensor_msgs::JointState &msg) {
   // ROS C++ callbacks are *not* threaded, so no need to lock the mutex.
   for (int i = 0; i < DOF_JOINTS; i++)
     desired_torque[i] = msg.effort[i];
+    
+    //  TODO
+    // change index finger's torque first.
 
   controlTorque = true;
 }
@@ -59,6 +62,7 @@ void AllegroNodeTorque::computeDesiredTorque() {
   if(!controlTorque) {
     for (int i = 0; i < DOF_JOINTS; i++)
       desired_torque[i] = 0.0;
+      // desired_torque[1] = -0.1;
   }
 
   // When controlTorque is true, there is no need to do anything (desired_torque

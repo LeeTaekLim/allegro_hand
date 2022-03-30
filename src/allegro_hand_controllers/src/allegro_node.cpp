@@ -65,6 +65,7 @@ AllegroNode::AllegroNode(bool sim /* = false */) {
   // Advertise current joint state publisher and subscribe to desired joint
   // states.
   joint_state_pub = nh.advertise<sensor_msgs::JointState>(JOINT_STATE_TOPIC, 3);
+  desired_joint_state_pub = nh.advertise<sensor_msgs::JointState>(DESIRED_JOINT_STATE_TOPIC, 3);
   joint_cmd_sub = nh.subscribe(DESIRED_STATE_TOPIC, 1, // queue size
                                 &AllegroNode::desiredStateCallback, this);
 }

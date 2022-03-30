@@ -2,11 +2,15 @@ using namespace std;
 
 #include "allegro_node_pd.h"
 #include <stdio.h>
+#include <cmath>
 
 #include "ros/ros.h"
 
 #define RADIANS_TO_DEGREES(radians) ((radians) * (180.0 / M_PI))
 #define DEGREES_TO_RADIANS(angle) ((angle) / 180.0 * M_PI)
+#define INDEX_FINGER 0
+#define MIDDLE_FINGER 4
+#define RING_FINGER 8
 
 // Default parameters.
 double k_p[DOF_JOINTS] =
@@ -94,7 +98,7 @@ AllegroNodePD::~AllegroNodePD() {
 // Called when an external (string) message is received
 void AllegroNodePD::libCmdCallback(const std_msgs::String::ConstPtr &msg) {
   ROS_INFO("CTRL: Heard: [%s]", msg->data.c_str());
-
+  is_sin = false;
   const std::string lib_cmd = msg->data.c_str();
 
   // Compare the message received to an expected input
@@ -120,6 +124,13 @@ void AllegroNodePD::libCmdCallback(const std_msgs::String::ConstPtr &msg) {
     for (int i = 0; i < DOF_JOINTS; i++)
       desired_joint_state.position[i] = current_position[i];
     mutex->unlock();
+  }
+
+  else if (lib_cmd.compare("sin")==0){
+    control_hand_ = true;
+    is_sin = true;
+    t = 0.0;
+    sin_start_t = ros::Time::now();
   }
 }
 
@@ -154,14 +165,13 @@ void AllegroNodePD::computeDesiredTorque() {
   {
     mutex->lock();
 
+    if(is_sin){
+      setDesiredJointState();
+    }
+
     if (desired_joint_state.position.size() == DOF_JOINTS) {
-      // Control joint positions: compute the desired torques (PD control).
-      double error;
-      for (int i = 0; i < DOF_JOINTS; i++) {
-        error = desired_joint_state.position[i] - current_position_filtered[i];
-        desired_torque[i] = 1.0/canDevice->torqueConversion() *
-                (k_p[i] * error - k_d[i] * current_velocity_filtered[i]);
-      }
+      setDesiredTorque();
+      
     } else if (desired_joint_state.effort.size() > 0) {
       // Control joint torques: set desired torques as the value stored in the
       // desired_joint_state message.
@@ -169,8 +179,11 @@ void AllegroNodePD::computeDesiredTorque() {
         desired_torque[i] = desired_joint_state.effort[i];
       }
     }
+    
     mutex->unlock();
   }
+  desired_joint_state.header.stamp = tnow;
+  desired_joint_state_pub.publish(desired_joint_state);
 }
 
 void AllegroNodePD::initController(const std::string &whichHand) {
@@ -249,3 +262,25 @@ int main(int argc, char **argv) {
   }
   allegroNode.doIt(polling);
 }
+
+
+void AllegroNodePD::setDesiredJointState(){
+  t = (tnow-sin_start_t).nsec*1e-9 + (tnow-sin_start_t).sec;
+  desired_joint_state.position[MIDDLE_FINGER] = 0;desired_joint_state.position[MIDDLE_FINGER+2] = 0;
+  desired_joint_state.position[INDEX_FINGER] = 0;desired_joint_state.position[INDEX_FINGER+2] = 0;
+  desired_joint_state.position[MIDDLE_FINGER+3] = 0;
+  desired_joint_state.position[INDEX_FINGER+3] = 0;
+  desired_joint_state.position[MIDDLE_FINGER+1] = DEGREES_TO_RADIANS(8)*sin(2*M_PI*1*t);
+  desired_joint_state.position[INDEX_FINGER+1] = -DEGREES_TO_RADIANS(8)*sin(2*M_PI*1*t);
+
+}
+
+void AllegroNodePD::setDesiredTorque(){
+    double error;
+    for (int i = 0; i < DOF_JOINTS; i++) {
+    error = desired_joint_state.position[i] - current_position_filtered[i];
+    desired_torque[i] = 1.0/canDevice->torqueConversion() *
+            (k_p[i] * error - k_d[i] * current_velocity_filtered[i]);
+    }
+}
+
